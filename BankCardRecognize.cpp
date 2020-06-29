@@ -13,7 +13,7 @@ vector<Rect> sortContours(vector<vector<Point>> cont); //该函数返回的是�
 vector<Rect>  sortBoundRect(vector<Rect> boundRect); //这个是直接对轮廓框容器排序
 vector<Rect> bubbleSort(vector<Rect> rect, int count);
 vector<Rect> sortBoundRect(vector<Rect> boundRect);
-
+int findIndex(vector<double> vec);
 int main() {
 	Mat tmp = imread("C:/Users/sherlock/Documents/template-matching-ocr/images/ocr_a_reference.png");
 	showImage("tmp", tmp);
@@ -96,10 +96,14 @@ int main() {
 				matchTemplate(number, aloneTmpImage[m], result, TM_CCOEFF_NORMED);
 				minMaxLoc(result, NULL, &maxVal, NULL, NULL);
 				scores[m] = maxVal;  //存储单个模板的匹配值
+				cout <<"scores["<<m<<"]="<< scores[m] << endl;
+
 			}
-			int maxPosition = *max_element(scores.begin(), scores.end()); //是几就是数字几
+			double maxValue = *max_element(scores.begin(), scores.end());
+			int maxPosition = findIndex(scores);
+			cout << "maxValue= " << maxValue << "at [" << maxPosition << "]" << endl;
 			rectangle(bankCard, object_boundRect[i].tl(), object_boundRect[i].br(), Scalar(0, 0, 255), 1);
-			double numPosition_blx =j*(object_boundRect[i].width/4.0) ;
+			double numPosition_blx =object_boundRect[i].x + j*(object_boundRect[i].width/4.0) ;
 			double numPosition_bly = object_boundRect[i].y;
 			Point numPosition = Point (numPosition_blx, numPosition_bly);
 
@@ -177,4 +181,16 @@ vector<Rect>  bubbleSort(vector<Rect> rect,  int count) {
 			}
 		}
 	return sortRect;
+}
+int findIndex(vector<double> vec) {
+	vector<double> temp = vec;
+	double maxValue = temp[0];
+	int index=0;
+	for (int i = 0; i < temp.size(); i++) {
+		if (temp[i] > maxValue) {
+			maxValue = temp[i];
+			index = i;
+		}
+	}
+	return index;
 }
